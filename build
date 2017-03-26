@@ -55,6 +55,9 @@ then
   sed -i -e 's/;push "dhcp-option DNS 208.67.222.222"/push "dhcp-option DNS 208.67.222.222"/g' /etc/openvpn/server.conf
   sed -i -e 's/;push "dhcp-option DNS 208.67.220.220"/push "dhcp-option DNS 208.67.220.220"/g' /etc/openvpn/server.conf
 
+  # uncomment ;tls-auth ta.key 0 # This file is secret
+  sed -i -e 's/;tls-auth ta.key 0/tls-auth ta.key 0/g' /etc/openvpn/server.conf
+
   # uncomment ;user nobody
   # uncomment ;group nogroup
   sed -i -e 's/;user nobody/user nobody/g' /etc/openvpn/server.conf
@@ -120,6 +123,9 @@ then
   # copy certificates to /etc/openvpn
   cp /etc/openvpn/easy-rsa/keys/{server.crt,server.key,ca.crt} /etc/openvpn
 
+  # create tls-auth key
+  openvpn --genkey --secret /etc/openvpn/ta.key
+
   # start openvpn service
   service openvpn start
 
@@ -152,6 +158,9 @@ then
     sed -i -e 's/cert client.crt/#cert client.crt/g' /etc/openvpn/easy-rsa/keys/$client.ovpn
     sed -i -e 's/key client.key/#key client.key/g' /etc/openvpn/easy-rsa/keys/$client.ovpn
 
+    # turn on key-direction
+    echo 'key-direction 1' >> /etc/openvpn/easy-rsa/keys/$client.ovpn
+
     # paste actual certificates into $client.ovpn
     echo '<ca>' >> /etc/openvpn/easy-rsa/keys/$client.ovpn
     cat /etc/openvpn/ca.crt >> /etc/openvpn/easy-rsa/keys/$client.ovpn
@@ -162,6 +171,9 @@ then
     echo '<key>' >> /etc/openvpn/easy-rsa/keys/$client.ovpn
     cat /etc/openvpn/easy-rsa/keys/$client.key >> /etc/openvpn/easy-rsa/keys/$client.ovpn
     echo '</key>' >> /etc/openvpn/easy-rsa/keys/$client.ovpn
+    echo '<tls-auth>' >> /etc/openvpn/easy-rsa/keys/$client.ovpn
+    cat /etc/openvpn/ta.key >> /etc/openvpn/easy-rsa/keys/$client.ovpn
+    echo '</tls-auth>' >> /etc/openvpn/easy-rsa/keys/$client.ovpn
 
     # copy client1.ovpn to /root
     cp /etc/openvpn/easy-rsa/keys/$client.ovpn /root/$client.ovpn
