@@ -10,4 +10,4 @@ After launching a fresh DigitalOcean "Droplet" running Ubuntu 14.x, Ubuntu 15.x,
 <b>Note:</b> The code is downloaded directly from GitHub. As a best practice, you should inspect the code before executing it.
 
 # Detailed Guide
-www.serveradventures.com/the-adventures/setting-up-your-own-cloud-vpn-server-in-under-30-minutes
+< removed my old blog links post due to malicious domain parking > 
